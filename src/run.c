@@ -37,7 +37,7 @@ static char *prompt_str(const char *prefix)
   return (ret);
 }
 
-// Ask the user it's login
+// Ask the user it's pass
 static char *prompt_pass()
 {
   char	*pass;
@@ -48,36 +48,47 @@ static char *prompt_pass()
       perror("getpass");
       return (NULL);
     }
+  if (strlen(pass) > 14)
+    {
+      free(pass);
+      fprintf(stderr, "Pass unsupported\n");
+      return (NULL);
+    }
   return (pass);
 }
 
 // Send authentification strings to the server
-// Calls free() on the login and the pass 0since they no longer need to exist
+// Calls free() on the login and the pass since they no longer need to exist
 static int authenticate(t_moulicl *cl, char *login, char *pass)
 {
   size_t len;
   byte	in[16];
   byte	out[16];
 
+  // Set unused bytes to 0
   memset(in, 0, 16);
   len = strlen(pass);
+  // First byte of the pack is the length of the datas
   in[0] = len;
+  // Then the datas follow (no more than 15 bytes
   memmove(&in[1], pass, len);
+  // Erase pass from memory
   memset(pass, 0, strlen(pass));
   cipher(in, out, cl->exp_key);
+  // Remember to erase the ciphered pass from memory
   if (dprintf(cl->socket, "%s\n", login) < 0)
     {
+      memset(out, 0, 16);
       free(login);
       free(pass);
-      memset(out, 0, 16);
       perror("dprintf");
       return (1);
     }
   if (write(cl->socket, out, 16) < 0)
     {
+      memset(out, 0, 16);
       free(login);
       free(pass);
-      memset(out, 0, 16);
       perror("write");
       return (1);
     }
@@ -98,6 +109,7 @@ static int wait_results(t_moulicl *cl)
   FD_SET(cl->socket, &rfds);
   while (select(cl->socket + 1, &rfds, NULL, NULL, NULL) > 0)
     {
+      FD_SET(cl->socket, &rfds);
       ret = read(cl->socket, buffer, BUFSIZ - 1);
       if (!ret)
 	return (0);

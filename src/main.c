@@ -70,7 +70,7 @@ static int	fetchkey(char *file, byte *key)
 }
 
 // Entry point
-// Use the program as : ./mouli <keyfile> <configfile>
+// Use the program as: ./moulicl <keyfile> <configfile>
 // The keyfile must contain an hexadecimal string of 64 digits (letters must be
 // lowercase) with an optionnal trailing end of line
 int	main(int argc, char **argv)

@@ -28,6 +28,7 @@ static int realloc_config_entries(t_config *cfg, size_t newsize)
       perror("realloc");
       return (1);
     }
+  cfg->alloc_entries = newsize;
   cfg->entries = tmp;
   return (0);
 }
