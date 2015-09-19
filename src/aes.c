@@ -73,11 +73,6 @@ void coef_mult(uint8_t *a, uint8_t *b, uint8_t *d) {
 }
 
 /*
- * The cipher Key.
- */
-int K;
-
-/*
  * Number of columns (32-bit words) comprising the State. For this
  * standard, Nb = 4.
  */
@@ -87,13 +82,13 @@ int Nb = 4;
  * Number of 32-bit words comprising the Cipher Key. For this
  * standard, Nk = 4, 6, or 8.
  */
-int Nk;
+int Nk = 8;
 
 /*
  * Number of rounds, which is a function of  Nk  and  Nb (which is
  * fixed). For this standard, Nr = 10, 12, or 14.
  */
-int Nr;
+int Nr = 14;
 
 /*
  * S-box transformation table

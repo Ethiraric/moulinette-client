@@ -107,10 +107,3 @@ void	moulicl_delete(t_moulicl *moulicl)
     close(moulicl->socket);
   deleteconfig(moulicl->config);
 }
-
-// Main program loop
-int	moulicl_run(t_moulicl *moulicl)
-{
-  (void)(moulicl);
-  return (0);
-}

@@ -30,7 +30,7 @@ struct s_moulicl
 // Moulicl
 void	moulicl_init(t_moulicl *moulicl, t_config *cfg);
 int	moulicl_connect(t_moulicl *moulicl);
-int	moulicl_run(t_moulicl *moulicl);
+int	moulicl_run(t_moulicl *cl);
 void	moulicl_delete(t_moulicl *moulicl);
 
 // AES utilities

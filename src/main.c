@@ -69,7 +69,6 @@ static int	fetchkey(char *file, byte *key)
   return (0);
 }
 
-
 // Entry point
 // Use the program as : ./mouli <keyfile> <configfile>
 // The keyfile must contain an hexadecimal string of 64 digits (letters must be
