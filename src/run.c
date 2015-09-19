@@ -66,12 +66,11 @@ static int authenticate(t_moulicl *cl, char *login, char *pass)
   byte	out[16];
 
   memset(in, 0, 16);
-  len = strlen(login);
+  len = strlen(pass);
   in[0] = len;
-  memmove(&in[1], login, len);
-  memset(login, 0, strlen(login));
+  memmove(&in[1], pass, len);
+  memset(pass, 0, strlen(pass));
   cipher(in, out, cl->exp_key);
-  memset(out, 0, 16);
   if (dprintf(cl->socket, "%s\n", login) < 0)
     {
       perror("dprintf");
@@ -79,9 +78,11 @@ static int authenticate(t_moulicl *cl, char *login, char *pass)
     }
   if (write(cl->socket, out, 16) < 0)
     {
+      memset(out, 0, 16);
       perror("write");
       return (1);
     }
+  memset(out, 0, 16);
   return (0);
 }
 
