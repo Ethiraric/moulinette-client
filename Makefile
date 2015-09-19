@@ -4,8 +4,8 @@
 ## Made by Florian SABOURIN
 ## Login   <sabour_f@epitech.net>
 ##
-## Started on  Sat Sep 19 12:03:09 2015 Florian SABOURIN
-## Last update Sat Sep 19 12:03:09 2015 Florian SABOURIN
+## Started on  Sat Sep 19 15:08:43 2015 Florian SABOURIN
+## Last update Sat Sep 19 15:08:43 2015 Florian SABOURIN
 ##
 
 # Executables
@@ -16,17 +16,18 @@ RM		=	@rm -vf
 MAKE		+=	--no-print-directory
 
 # Names
-NAME		=	mouli
+NAME		=	moulicl
 
 # Flags
-CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -I. 
-CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -I. 
+CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude 
+CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude 
 LDFLAGS		=	
 
 # Files
-CSRC		=	./config.c
-CSRC		+=	./main.c
-CSRC		+=	./aes.c
+CSRC		=	src/config.c
+CSRC		+=	src/main.c
+CSRC		+=	src/moulicl.c
+CSRC		+=	src/aes.c
 
 
 # Objects
@@ -48,12 +49,15 @@ re: fclean all
 
 .PHONY: 	all clean fclean re
 
-./config.o: ./config.c ./config.h
-	$(CC) $(CFLAGS) -c -o ./config.o ./config.c
+src/config.o: src/config.c include/config.h
+	$(CC) $(CFLAGS) -c -o src/config.o src/config.c
 
-./main.o: ./main.c ./config.h
-	$(CC) $(CFLAGS) -c -o ./main.o ./main.c
+src/main.o: src/main.c include/config.h
+	$(CC) $(CFLAGS) -c -o src/main.o src/main.c
 
-./aes.o: ./aes.c
-	$(CC) $(CFLAGS) -c -o ./aes.o ./aes.c
+src/moulicl.o: src/moulicl.c
+	$(CC) $(CFLAGS) -c -o src/moulicl.o src/moulicl.c
+
+src/aes.o: src/aes.c
+	$(CC) $(CFLAGS) -c -o src/aes.o src/aes.c
 
