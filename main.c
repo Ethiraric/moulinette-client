@@ -8,12 +8,11 @@
 ** Last update Sat Sep 19 09:39:11 2015 Florian SABOURIN
 */
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-#include <errno.h>
+#include "config.h"
 
 // Defined for convenience
 typedef unsigned char byte;
@@ -35,7 +34,7 @@ static int	fetchkey(int fd, byte *key)
   if (left)
     {
       if (readret < 0)
-	fprintf(stderr, "Error while reading: %s\n", strerror(errno));
+	perror("read");
       else
 	fprintf(stderr, "Ill formated key file\n");
       return (1);
@@ -65,17 +64,18 @@ static int	fetchkey(int fd, byte *key)
 
 
 // Entry point
-// Use the program as : ./aes <keyfile>
+// Use the program as : ./mouli <keyfile> <configfile>
 // The keyfile must contain an hexadecimal string of 64 digits (letters must be
 // lowercase) with an optionnal trailing end of line
 int	main(int argc, char **argv)
 {
+  t_config *config;
   byte	key[32];
   int	fd;
 
-  if (argc != 2)
+  if (argc != 3)
     {
-      fprintf(stderr, "Usage: %s keyfile\n", *argv);
+      fprintf(stderr, "Usage: %s keyfile configfile\n", *argv);
       return (1);
     }
   fd = open(argv[1], O_RDONLY);
@@ -83,13 +83,23 @@ int	main(int argc, char **argv)
     {
       if (fetchkey(fd, key) == 0)
 	{
-	  close(fd);
-	  return (0);
+	  config = loadconfig(argv[2]);
+	  if (config)
+	    {
+	      unsigned int i;
+	      for (i = 0 ; i < config->nb_entries ; ++i)
+		printf("[%s] %s\n", config->entries[i].key, config->entries[i].value);
+	      deleteconfig(config);
+	      close(fd);
+	      return (0);
+	    }
+	  else
+	    close(fd);
 	}
       else
 	close(fd);
     }
   else
-    fprintf(stderr, "Failed to open %s: %s\n", argv[1], strerror(errno));
+    perror("open");
   return (1);
 }
