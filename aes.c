@@ -347,7 +347,7 @@ void rot_word(uint8_t *w) {
 void key_expansion(uint8_t *key, uint8_t *w) {
 
   uint8_t tmp[4];
-  uint8_t i, j;
+  uint8_t i;
   uint8_t len = Nb*(Nr+1);
 
   for (i = 0; i < Nk; i++) {
