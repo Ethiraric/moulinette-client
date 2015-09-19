@@ -19,9 +19,9 @@ MAKE		+=	--no-print-directory
 NAME		=	moulicl
 
 # Flags
-CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -ggdb3 -Iinclude 
-CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -ggdb3 -Iinclude 
-LDFLAGS		=	
+CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude
+CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude
+LDFLAGS		=
 
 # Files
 CSRC		=	src/run.c
