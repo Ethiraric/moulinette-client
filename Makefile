@@ -1,11 +1,11 @@
 ##
-## Makefile for  in /home/sabour_f/aes
+## Makefile for  in /home/sabour_f/github/moulinette-client
 ##
 ## Made by Florian SABOURIN
 ## Login   <sabour_f@epitech.net>
 ##
-## Started on  Sat Sep 19 16:06:02 2015 Florian SABOURIN
-## Last update Sat Sep 19 16:06:02 2015 Florian SABOURIN
+## Started on  Tue Sep 22 10:36:31 2015 Florian SABOURIN
+## Last update Tue Sep 22 10:36:31 2015 Florian SABOURIN
 ##
 
 # Executables
@@ -19,9 +19,9 @@ MAKE		+=	--no-print-directory
 NAME		=	moulicl
 
 # Flags
-CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude
-CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude
-LDFLAGS		=
+CFLAGS		=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude 
+CXXFLAGS	=	-Wall -W -Wshadow -fno-diagnostics-show-caret -Iinclude 
+LDFLAGS		=	
 
 # Files
 CSRC		=	src/run.c

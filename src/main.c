@@ -81,26 +81,30 @@ int	main(int argc, char **argv)
 
   if (argc != 3)
     {
-      fprintf(stderr, "Usage: %s keyfile configfile\n", *argv);
+      fprintf(stderr, "Usage: %s configfile < --register | keyfile >\n",
+	      *argv);
       return (1);
     }
 
-  if (fetchkey(argv[1], cl.key) == 0)
+  config = loadconfig(argv[1]);
+  if (config)
     {
-      config = loadconfig(argv[2]);
-      if (config)
+      if (strcmp(argv[2], "--register") && fetchkey(argv[2], cl.key))
 	{
-	  moulicl_init(&cl, config);
-	  if (moulicl_connect(&cl) == 0)
-	    {
-	      ret = moulicl_run(&cl);
-	      moulicl_delete(&cl);
-	      return (ret);
-	    }
 	  moulicl_delete(&cl);
+	  return (1);
 	}
+      moulicl_init(&cl, config);
+      if (moulicl_connect(&cl) == 0)
+	{
+	  if (strcmp(argv[2], "--register"))
+	    ret = moulicl_run(&cl);
+	  else
+	    ret = moulicl_register(&cl);
+	  moulicl_delete(&cl);
+	  return (ret);
+	}
+      moulicl_delete(&cl);
     }
-  else
-    perror("open");
   return (1);
 }

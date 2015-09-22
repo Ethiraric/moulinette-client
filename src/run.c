@@ -147,6 +147,13 @@ int	moulicl_run(t_moulicl *cl)
       free(pass);
       return (1);
     }
+  if (dprintf(cl->socket, "mouli%c%c%c", 0, 0, 0) < 0)
+    {
+      perror("dprintf");
+      free(login);
+      free(pass);
+      return (1);
+    }
   if (authenticate(cl, login, pass) == 0)
     {
       // Ask for repository
@@ -163,4 +170,29 @@ int	moulicl_run(t_moulicl *cl)
       return (wait_results(cl));
     }
   return (1);
+}
+
+// On registering
+int	moulicl_register(t_moulicl *cl)
+{
+  char	*login;
+  char	*username;
+
+  login = prompt_str("Login: ");
+  if (!login)
+    return (1);
+  username = getlogin();
+  if (!username)
+    {
+      perror("getlogin");
+      return (1);
+    }
+  if (dprintf(cl->socket, "register%s\n%s\n", login, username) < 0)
+    {
+      perror("dprintf");
+      free(login);
+      return (1);
+    }
+  free(login);
+  return (wait_results(cl));
 }
