@@ -33,6 +33,7 @@ int	moulicl_connect(t_moulicl *moulicl);
 int	moulicl_run(t_moulicl *cl);
 void	moulicl_delete(t_moulicl *moulicl);
 int	moulicl_register(t_moulicl *cl);
+void	moulicl_expand_key(t_moulicl *moulicl);
 
 // AES utilities
 void	key_expansion(uint8_t *key, uint8_t *w);

@@ -91,14 +91,18 @@ int	main(int argc, char **argv)
   if (config)
     {
       // Get key if the user does not register
-      if (strcmp(argv[2], "--register") && fetchkey(argv[2], cl.key))
+      moulicl_init(&cl, config);
+      if (strcmp(argv[2], "--register"))
 	{
-	  moulicl_delete(&cl);
-	  return (1);
+	  if (fetchkey(argv[2], cl.key))
+	    {
+	      moulicl_delete(&cl);
+	      return (1);
+	    }
+	  moulicl_expand_key(&cl);
 	}
 
       // Connect and either register / mouli
-      moulicl_init(&cl, config);
       if (moulicl_connect(&cl) == 0)
 	{
 	  if (strcmp(argv[2], "--register"))

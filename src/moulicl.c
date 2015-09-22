@@ -17,11 +17,16 @@
 #include "moulicl.h"
 
 // Initializes a moulicl structure
-// The key field of moulicl must be filled with the key BEFORE calling this
 void	moulicl_init(t_moulicl *moulicl, t_config *cfg)
 {
   moulicl->config = cfg;
   moulicl->socket = 0;
+}
+
+// Expands the key of the moulicl
+// The key field of moulicl must be filled with the key BEFORE calling this
+void	moulicl_expand_key(t_moulicl *moulicl)
+{
   key_expansion(moulicl->key, moulicl->exp_key);
 }
 
@@ -113,5 +118,6 @@ void	moulicl_delete(t_moulicl *moulicl)
 {
   if (moulicl->socket)
     close(moulicl->socket);
-  deleteconfig(moulicl->config);
+  if (moulicl->config)
+    deleteconfig(moulicl->config);
 }
