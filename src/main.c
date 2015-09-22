@@ -86,14 +86,18 @@ int	main(int argc, char **argv)
       return (1);
     }
 
+  // Load config, check arguments (register / mouli)
   config = loadconfig(argv[1]);
   if (config)
     {
+      // Get key if the user does not register
       if (strcmp(argv[2], "--register") && fetchkey(argv[2], cl.key))
 	{
 	  moulicl_delete(&cl);
 	  return (1);
 	}
+
+      // Connect and either register / mouli
       moulicl_init(&cl, config);
       if (moulicl_connect(&cl) == 0)
 	{
@@ -101,6 +105,8 @@ int	main(int argc, char **argv)
 	    ret = moulicl_run(&cl);
 	  else
 	    ret = moulicl_register(&cl);
+
+	  // Cleanup
 	  moulicl_delete(&cl);
 	  return (ret);
 	}

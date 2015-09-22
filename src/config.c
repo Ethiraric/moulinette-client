@@ -103,6 +103,7 @@ t_config *loadconfig(const char *name)
   return (ret);
 }
 
+// Deallocates all resources allocated for the configuration
 void	deleteconfig(t_config *cfg)
 {
   size_t i;

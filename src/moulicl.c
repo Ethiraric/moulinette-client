@@ -17,6 +17,7 @@
 #include "moulicl.h"
 
 // Initializes a moulicl structure
+// The key field of moulicl must be filled with the key BEFORE calling this
 void	moulicl_init(t_moulicl *moulicl, t_config *cfg)
 {
   moulicl->config = cfg;
@@ -29,6 +30,7 @@ static char *get_host(t_config *cfg)
 {
   size_t i;
 
+  // Find the entry whose key is "host"
   for (i = 0 ; i < cfg->nb_entries ; ++i)
     if (!strcmp(cfg->entries[i].key, "host"))
       return (cfg->entries[i].value);
@@ -42,6 +44,8 @@ static unsigned short get_port(t_config *cfg)
   size_t i;
   int port;
 
+  // Find the entry whose key is "port"
+  // Convert to unsigned short and check that port is valid
   for (i = 0 ; i < cfg->nb_entries ; ++i)
     if (!strcmp(cfg->entries[i].key, "port"))
       {
@@ -70,16 +74,18 @@ int	moulicl_connect(t_moulicl *moulicl)
   if (!port)
     return (1);
 
-  // Do connect
   struct hostent *hostinfo;
   struct sockaddr_in sin;
 
+  // Get host if needed
   hostinfo = gethostbyname(host);
   if (!hostinfo)
     {
       herror("gethostbyname");
       return (1);
     }
+
+  // Create socket
   moulicl->socket = socket(AF_INET, SOCK_STREAM, 0);
   if (moulicl->socket == -1)
     {
@@ -87,6 +93,8 @@ int	moulicl_connect(t_moulicl *moulicl)
       moulicl->socket = 0;
       return (1);
     }
+
+  // Connect
   sin.sin_addr = *((struct in_addr *)hostinfo->h_addr);
   sin.sin_port = htons(port);
   sin.sin_family = AF_INET;

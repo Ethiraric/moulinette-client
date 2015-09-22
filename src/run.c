@@ -14,7 +14,9 @@
 #include <unistd.h>
 #include "moulicl.h"
 
-// Ask the user a string
+// Ask the user somtehing
+// Prefix will be displayed before prompting
+// Returns the next line without '\n' (replaced by a '\0')
 static char *prompt_str(const char *prefix)
 {
   size_t size;
@@ -48,6 +50,8 @@ static char *prompt_pass()
       perror("getpass");
       return (NULL);
     }
+
+  // Otherwise we cannot encrypt it in one AES block
   if (strlen(pass) > 14)
     {
       free(pass);
@@ -68,13 +72,17 @@ static int authenticate(t_moulicl *cl, char *login, char *pass)
   // Set unused bytes to 0
   memset(in, 0, 16);
   len = strlen(pass);
+
   // First byte of the pack is the length of the datas
   in[0] = len;
-  // Then the datas follow (no more than 15 bytes
+
+  // Then the datas follow (no more than 15 bytes)
   memmove(&in[1], pass, len);
+
   // Erase pass from memory
   memset(pass, 0, strlen(pass));
   cipher(in, out, cl->exp_key);
+
   // Remember to erase the ciphered pass from memory
   if (dprintf(cl->socket, "%s\n", login) < 0)
     {
@@ -92,6 +100,8 @@ static int authenticate(t_moulicl *cl, char *login, char *pass)
       perror("write");
       return (1);
     }
+
+  // Cleanup
   memset(out, 0, 16);
   free(login);
   free(pass);
@@ -99,6 +109,7 @@ static int authenticate(t_moulicl *cl, char *login, char *pass)
 }
 
 // Wait for results and display them
+// This is a select(), read(), printf() loop
 static int wait_results(t_moulicl *cl)
 {
   fd_set rfds;
@@ -107,10 +118,14 @@ static int wait_results(t_moulicl *cl)
 
   FD_ZERO(&rfds);
   FD_SET(cl->socket, &rfds);
+
+  // select
   while (select(cl->socket + 1, &rfds, NULL, NULL, NULL) > 0)
     {
-      FD_SET(cl->socket, &rfds);
+      // read
       ret = read(cl->socket, buffer, BUFSIZ - 1);
+
+      // If the socket is closed or there is an error
       if (!ret)
 	return (0);
       if (ret < 0)
@@ -119,7 +134,11 @@ static int wait_results(t_moulicl *cl)
 	  return (1);
 	}
       buffer[ret] = '\0';
+
+      // printf
       printf("%s", buffer);
+
+      FD_SET(cl->socket, &rfds);
     }
   perror("select");
   return (1);
@@ -140,6 +159,8 @@ int	moulicl_run(t_moulicl *cl)
       free(login);
       return (1);
     }
+
+  // Otherwise we may overflow in static buffers
   if (strlen(login) > 8)
     {
       fprintf(stderr, "Invalid login\n");
@@ -147,6 +168,8 @@ int	moulicl_run(t_moulicl *cl)
       free(pass);
       return (1);
     }
+
+  // Send command
   if (dprintf(cl->socket, "mouli%c%c%c", 0, 0, 0) < 0)
     {
       perror("dprintf");
@@ -154,9 +177,11 @@ int	moulicl_run(t_moulicl *cl)
       free(pass);
       return (1);
     }
+
+  // Ask for authentication
+  // If everything is ok, promt repository
   if (authenticate(cl, login, pass) == 0)
     {
-      // Ask for repository
       repo = prompt_str("Repository: ");
       if (!repo)
 	return (1);
@@ -167,6 +192,8 @@ int	moulicl_run(t_moulicl *cl)
 	  return (1);
 	}
       free(repo);
+
+      // Display what the server sends us
       return (wait_results(cl));
     }
   return (1);
@@ -178,15 +205,19 @@ int	moulicl_register(t_moulicl *cl)
   char	*login;
   char	*username;
 
+  // Ask login
   login = prompt_str("Login: ");
   if (!login)
     return (1);
+
+  // As a "security", send also the username
   username = getlogin();
   if (!username)
     {
       perror("getlogin");
       return (1);
     }
+
   if (dprintf(cl->socket, "register%s\n%s\n", login, username) < 0)
     {
       perror("dprintf");
