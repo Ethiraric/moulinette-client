@@ -5,6 +5,7 @@ This program is the client of a moulinette for EPITECH students. It will connect
 Run:
 
     git clone https://github.com/Ethiraric/moulinette-client.git
+    cd moulinette-client
     make
 
 The executable is named 'mouli'.
@@ -18,12 +19,12 @@ You must indicate on what host and port the moulinette client should connect. Fo
     host=example.org
     port=1234
 
-is a valid config name
+is a valid config file.
 
 ## Running your tests
 You should call mouli the following way:
 
-    ./mouli <path-to-key> <path-to-config>
+    ./mouli <path-to-config> <path-to-key>
 
 replacing `<path-to-key>` with the actual path to your key file, and `<path-to-config>` with the actual path to your config file.
 
